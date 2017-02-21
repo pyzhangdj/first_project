@@ -1,0 +1,63 @@
+{%extends "cmdb/base.html"%}
+
+{%block title%}首页{%endblock title%}
+
+{%block active_1%}class='active'{%endblock active_1%}
+
+{%block content%}
+
+
+<section id="main-content">
+	<section class="wrapper">
+		
+<div class="row mt">
+	<div class="col-lg-12">
+		<div class="content-panel">
+			<h4><i class="fa fa-angle-right"></i> 访问前10 ：</h4>
+			<table class="table table-bordered table-striped table-condensed">
+				<thead>
+					<tr>
+						<th>id</th>
+						<th>请求IP</th>
+						<th>请求URL</th>
+						<th>状态</th>
+						<th>次数</th>
+					</tr>
+				</thead>
+
+				<tbody>
+				{%for i in access%}
+					<tr>
+					<td>{{i.id}}</td>
+					<td>{{i.access_ip}}</td>
+					<td>{{i.access_url}}</td>
+					<td>{{i.status}}</td>
+					<td>{{i.num}}</td>
+					</tr>
+					{%endfor%}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<h2 id="biao">这是一个标题</h2>
+<p>这是一个段落。</p>
+<p>这是另一个段落。</p>
+<button id="myDiv">点我</button>
+
+
+</section>
+</section>
+{%endblock content%}
+{%block content_js%}
+<script>
+
+$(document).ready(function(){
+		$("button").click(function(){
+				htmlobj = $.ajax({url:"cmdb:ceshi"});
+				$("#biao").html(htmlobj.responseText);
+				});
+		});
+</script>
+{%endblock content_js%}

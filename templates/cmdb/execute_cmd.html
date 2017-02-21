@@ -1,0 +1,60 @@
+{%extends "cmdb/base.html"%}
+{%block title%}命令执行{%endblock title%}
+
+<!--这是为了鼠标留在二级页面--
+{%block active_3%}class="active"{%endblock active_3%}
+{%block content %} 
+
+<section id="main-content">
+	<section class="wrapper">
+		<div class="showback">
+			<div class="row">
+			   <form class="form-horizontal"  method='post'>
+				   {%csrf_token%}
+				<div class="row">
+						<div class="col-md-6">
+							<label for="host" >主机:
+							<input type="text"  id="host" placeholder="host">
+						</div>
+						<div class="col-md-6">
+							<label for="cmd">命令:
+							<input type="text"  id="cmd" placeholder="cmd">
+						</div>
+					</div>
+					<div style="padding-left:40px">
+					<button type="button" class="btn btn-success" >执行</button>
+					</div>
+	<br>
+	<p> 结果：</p>
+	<pre id='result'></pre>
+<br>
+				</form>
+       
+			</div>	
+		</div>
+	</section>
+</section>
+
+
+{%endblock content%}
+
+{%block content_js%}
+<script >
+$(document).ready(function(){
+    $.ajaxSetup({headers:{'X-CSRFToken':'{{ csrf_token }}'}});
+    $('button').click(function(){
+	var host = $("#host").val();
+	var cmd = $("#cmd").val();
+	$.ajax({
+		url:'/cmd_result/',
+		type:'POST',
+		data:{host:host,cmd:cmd},
+		dataType:"json",
+		success:function(result){
+		$("#result").html(result.text);
+}
+});
+});
+});
+</script>
+{%endblock content_js%}

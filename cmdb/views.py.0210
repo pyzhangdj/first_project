@@ -1,0 +1,48 @@
+from django.shortcuts import render,render_to_response
+from django.http import HttpResponseRedirect,Http404
+from django.core.urlresolvers import reverse
+
+from .models import User,ServerList
+# Create your views here.
+
+def login(request):
+	'''
+	这里定义了一个登陆视图
+
+	'''
+	if request.method != 'POST':
+		return render(request,"cmdb/login.html")
+	else:
+		login_name = request.POST['login_name']
+		login_passwd = request.POST['login_passwd']
+		i = 1
+		while i <= len(User.objects.all()):
+			if login_name == User.objects.get(id=i).login_name and login_passwd == User.objects.get(id=i).login_passwd:
+				return HttpResponseRedirect(reverse('cmdb:index'))
+				#return render(request,'cmdb/index.html')
+				break
+			else:
+				while i == len(User.objects.all()):
+					return HttpResponseRedirect(reverse('cmdb:login'))
+				i += 1
+
+def logout(request):
+	"""
+	注销视图，点击注销就返回到登陆页面
+	"""
+	return HttpResponseRedirect(reverse('cmdb:login'))
+
+
+def index(request):
+	'''
+	这是首页，也是仪表盘显示页
+	'''
+	return render(request,'cmdb/index.html')
+
+def server_info(request):
+	'''
+	服务器列表
+	'''
+	server_list = ServerList.objects.all()
+	context = {"server_list":server_list}
+	return render(request,'cmdb/server_info.html',context)

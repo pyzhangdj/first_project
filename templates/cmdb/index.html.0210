@@ -1,0 +1,14 @@
+{%extends "cmdb/base.html"%}
+
+{%block title%}首页{%endblock title%}
+
+{%block content%}
+<div class="table-responsive">
+	  <table class="table">
+	  
+	  </table>
+</div>
+
+
+
+{%endblock content%}

@@ -1,0 +1,186 @@
+
+{%extends "cmdb/base.html"%}
+{%block title%}
+资产统计
+{%endblock title %}
+
+{%block active_2%}class='active'{%endblock active_2%}
+
+
+{%block content%}
+<section id="main-content">
+	<section class="wrapper">
+			<div class="row mt">
+				<div class="panel-heading">
+					<div class="pull-left">
+						<h5><i class="fa fa-tasks"></i> Server-List</h5>
+					</div>	 
+					<br>
+			   </div>
+			   
+			   <div class="panel-body">
+					<table class="table table-hover">	
+						<tr class="active">
+							<td class="info">ID</td>
+							<td class="info">主机名</td>
+							<td class="info">操作系统</td>
+							<td class="info">公网IP</td>
+							<td class="info">内网IP</td>
+							<td class="info">CPU个数</td>
+							<td class="info">内存</td>
+							<td class="info">硬盘</td>
+							<td class="info">安装软件</td>
+							<td class="info">操作</td>
+						</tr>
+						<tr class="active">
+							{% for server in server_list%}
+							<td class="active">{{server.id}}</td>
+							<td class="active">{{server.host_name}}</td>
+							<td class="active">{{server.os}}</td>
+							<td class="active">{{server.public_ip}}</td>
+							<td class="active">{{server.intranet_ip}}</td>
+							<td class="active">{{server.cpu_num}} 个</td>
+							<td class="active">{{server.memory_size}} G</td>
+							<td class="active">{{server.disk_size}} G</td>
+							<td class="active">{{server.installed_software}}</td>
+							<td class="active">
+								<button type="button" id='btn1' class="btn btn-danger" data-id={{server.id}}>删除</button>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+				</div>	
+					<div class="showback">
+				<!-- Button trigger modal -->
+					<button class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
+						添加服务器
+					</button>			
+				<!-- Modal -->
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+								<h4 class="modal-title" id="myModalLabel">添加服务器</h4>
+							</div>
+							<div class="modal-body">
+
+								<form class="form-horizontal style-form" method="get">
+										{%csrf_token%}
+									<div class="form-group">
+										<label class="col-sm-2 col-sm-2 control-label">主机名</label>
+										<div class="col-sm-10">
+											<input class="form-control" id="add_host" type="text" >
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 col-sm-2 control-label">操作系统</label>
+										<div class="col-sm-10">
+											<input class="form-control" id="add_os" type="text" >
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 col-sm-2 control-label">公网IP</label>
+										<div class="col-sm-10">
+											<input class="form-control" id="add_puip" type="text" >
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 col-sm-2 control-label">内网IP</label>
+										<div class="col-sm-10">
+											<input class="form-control" id="add_inip" type="text" >
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 col-sm-2 control-label">CPU个数</label>
+										<div class="col-sm-10">
+											<input class="form-control" id="add_cpu" type="text">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 col-sm-2 control-label">内存</label>
+										<div class="col-sm-10">
+											<input class="form-control" id="add_memory" type="text" >
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 col-sm-2 control-label">硬盘</label>
+										<div class="col-sm-10">
+											<input class="form-control" id="add_disk" type="text" >
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 col-sm-2 control-label">安装软件</label>
+										<div class="col-sm-10">
+											<input class="form-control" id="add_soft" type="text" >
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+								<button type="button" class="btn btn-primary" id="save">Save changes</button>
+							</div>
+						</div>
+					</div>
+				</div>      				
+							</div><!-- /showback --> 
+      		
+	
+	</section>
+</section>
+{%endblock content%}
+{%block content_js%}
+<script>
+$(document).ready(function(){
+       $.ajaxSetup({headers:{'X-CSRFToken':'{{ csrf_token }}'}});
+		$("#btn1").click(function(){
+		var del_id = $(this).data('id');
+		alert('确定删除');
+		$.ajax({
+            url: '/del_server/',
+            type: 'POST',
+            data: {del_id: del_id},
+            success: function () {
+				loadPage();
+            }
+        });
+		});
+
+		$("#save").click(function(){
+		    var add_host = $("#add_host").val();
+		    var add_os = $("#add_os").val();
+		    var add_puip = $("#add_puip").val();
+		    var add_inip = $("#add_inip").val();
+		    var add_cpu = $("#add_cpu").val();
+		    var add_memory = $("#add_memory").val();
+		    var add_disk = $("#add_disk").val();
+		    var add_soft = $("#add_soft").val();
+			$.ajax({
+				url: '/add_server/',
+				type: 'POST',
+				data: {
+					add_host:add_host,
+					add_os:add_os,
+					add_puip:add_puip,
+					add_inip:add_inip,
+					add_cpu:add_cpu,
+					add_memory:add_memory,
+					add_disk:add_disk,
+					add_soft:add_soft,
+
+				},
+			})
+		});
+
+
+		});
+</script>
+{%endblock content_js%}
